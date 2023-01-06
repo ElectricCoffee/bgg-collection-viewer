@@ -7,8 +7,9 @@ namespace Items {
     const get = Elem.makeGetter(element);
     return {
       description: get("description").innerHTML,
-      minPlayers: get("minplayers").getAttribute("value") ?? "",
-      maxPlayers: get("maxplayers").getAttribute("value") ?? "",
+      minPlayers: Number(get("minplayers").getAttribute("value")),
+      maxPlayers: Number(get("maxplayers").getAttribute("value")),
+      type: element.getAttribute("type") ?? "",
     };
   }
 
@@ -17,7 +18,7 @@ namespace Items {
     const items = xml
       .getElementsByTagName("items")[0]
       .getElementsByTagName("item");
-
+    console.log(items);
     let itemData = {} as ItemData;
 
     for (const item of items) {

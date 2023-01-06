@@ -6,6 +6,7 @@ import _ from "lodash";
 import Collection from "./utils/Collection";
 import Items from "./utils/Items";
 import usePlayerCountStore from "./stores/usePlayerCountStore";
+import ItemData from "./types/ItemData";
 
 const userName = "ElectricCoffee";
 
@@ -45,13 +46,7 @@ function App() {
     if (games.length === 0) {
       console.log("polling server for game data...");
       axios
-        .get(
-          baseUrl +
-            "collection" +
-            `?username=${userName}` +
-            "&own=1" +
-            "&excludesubtype=boardgameexpansion"
-        )
+        .get(baseUrl + `collection?username=${userName}&own=1`)
         .then((collection) => {
           const newGames = Collection.dealWithXml(collection);
           setGames(newGames);
@@ -95,9 +90,10 @@ function App() {
             .filter(
               ({ id }) =>
                 playerCount === 0 ||
-                (Number(itemData[id]?.minPlayers) <= playerCount &&
-                  playerCount <= Number(itemData[id]?.maxPlayers))
+                (itemData[id]?.minPlayers <= playerCount &&
+                  playerCount <= itemData[id]?.maxPlayers)
             )
+            //.filter(({ id }) => itemData[id]?.type === "boardgameexpansion")
             .map((game) => (
               <tr key={game.id + game.name}>
                 <td>{game.id}</td>
@@ -106,10 +102,11 @@ function App() {
                 </td>
                 <td>
                   <strong>{game.name.replace("&amp;", "&")}</strong>
+                  {ItemData.isExpansion(game.id, itemData) && " (exp.)"}
                 </td>
                 <td>{game.year}</td>
-                <td>{itemData[game.id].minPlayers}</td>
-                <td>{itemData[game.id].maxPlayers}</td>
+                <td>{itemData[game.id]?.minPlayers}</td>
+                <td>{itemData[game.id]?.maxPlayers}</td>
               </tr>
             ))}
         </tbody>

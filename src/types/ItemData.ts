@@ -1,9 +1,17 @@
 export interface Item {
   description: string;
-  minPlayers: string;
-  maxPlayers: string;
+  minPlayers: number;
+  maxPlayers: number;
+  type: string;
 }
 
-export default interface ItemData {
+interface ItemData {
   [id: string]: Item;
 }
+
+namespace ItemData {
+  export const isExpansion = (id: string, data: ItemData) =>
+    data[id]?.type === "boardgameexpansion";
+}
+
+export default ItemData;
