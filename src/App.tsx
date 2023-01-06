@@ -1,24 +1,119 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from "react";
+import "./App.css";
+import axios from "axios";
+import useGameStore from "./stores/useGameStore";
+import _ from "lodash";
+import Collection from "./utils/Collection";
+import Items from "./utils/Items";
+import usePlayerCountStore from "./stores/usePlayerCountStore";
+
+const userName = "ElectricCoffee";
+
+const baseUrl = "https://boardgamegeek.com/xmlapi2/";
+
+function ResetButton() {
+  const reset = useGameStore((st) => st.reset);
+
+  return <button onClick={reset}>Reload List</button>;
+}
+
+const PlayerCountButtons = () => {
+  const { count, setCount } = usePlayerCountStore();
+
+  const decorate = (num: number) => {
+    const text = num === 0 ? "All" : num;
+    return num === count ? `» ${text} «` : text;
+  };
+
+  return (
+    <div>
+      Number of players:{" "}
+      {_.range(21).map((i) => (
+        <button onClick={() => setCount(i)} key={i}>
+          {decorate(i)}
+        </button>
+      ))}
+    </div>
+  );
+};
 
 function App() {
+  const { games, setGames, itemData, setItemData } = useGameStore();
+  const playerCount = usePlayerCountStore((st) => st.count);
+
+  useEffect(() => {
+    if (games.length === 0) {
+      console.log("polling server for game data...");
+      axios
+        .get(
+          baseUrl +
+            "collection" +
+            `?username=${userName}` +
+            "&own=1" +
+            "&excludesubtype=boardgameexpansion"
+        )
+        .then((collection) => {
+          const newGames = Collection.dealWithXml(collection);
+          setGames(newGames);
+        })
+        .catch((x) => console.error(x));
+    }
+  }, [games.length, setGames]);
+
+  useEffect(() => {
+    if (games.length !== 0 && Object.keys(itemData).length === 0) {
+      console.log("polling server for game info...");
+      const ids = _.uniq(games.map((x) => x.id)).join(",");
+
+      axios
+        .get(baseUrl + `thing?id=${ids}`)
+        .then((items) => {
+          const data = Items.dealWithXml(items);
+          setItemData(data);
+        })
+        .catch((e) => console.error(e));
+    }
+  }, [games, itemData, setItemData]);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <ResetButton />
+      <PlayerCountButtons />
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Image</th>
+            <th>Title</th>
+            <th>Year</th>
+            <th>Min Players</th>
+            <th>Max Players</th>
+          </tr>
+        </thead>
+        <tbody>
+          {games
+            .filter(
+              ({ id }) =>
+                playerCount === 0 ||
+                (Number(itemData[id]?.minPlayers) <= playerCount &&
+                  playerCount <= Number(itemData[id]?.maxPlayers))
+            )
+            .map((game) => (
+              <tr key={game.id + game.name}>
+                <td>{game.id}</td>
+                <td>
+                  <img src={game.thumb} alt="thumbnail" />
+                </td>
+                <td>
+                  <strong>{game.name.replace("&amp;", "&")}</strong>
+                </td>
+                <td>{game.year}</td>
+                <td>{itemData[game.id].minPlayers}</td>
+                <td>{itemData[game.id].maxPlayers}</td>
+              </tr>
+            ))}
+        </tbody>
+      </table>
     </div>
   );
 }
