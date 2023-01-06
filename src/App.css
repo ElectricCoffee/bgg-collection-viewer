@@ -1,3 +1,9 @@
+:root {
+  --purple: #3f3a60;
+  --orange: #ff5100;
+  --orange-dark: #d34604;
+}
+
 .App {
   text-align: center;
 }
