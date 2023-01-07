@@ -8,10 +8,18 @@ import Button from "react-bootstrap/Button";
 import useGameStore from "../stores/useGameStore";
 
 function ResetButton() {
-  const reset = useGameStore((st) => st.reset);
+  const resetGames = useGameStore((st) => st.reset);
+  const resetCount = usePlayerCountStore((st) => st.reset);
 
   return (
-    <Button size="lg" variant="outline-warning" onClick={reset}>
+    <Button
+      size="lg"
+      variant="outline-warning"
+      onClick={() => {
+        resetGames();
+        resetCount();
+      }}
+    >
       Reload List
     </Button>
   );

@@ -8,6 +8,7 @@ import Items from "./utils/Items";
 import usePlayerCountStore from "./stores/usePlayerCountStore";
 import GameCard from "./components/GameCard";
 import NavBar from "./components/NavBar";
+import Container from "react-bootstrap/Container";
 
 const userName = "ElectricCoffee";
 
@@ -51,18 +52,22 @@ function App() {
   return (
     <div className="App">
       <NavBar />
-
-      {games
-        .filter(
-          ({ id }) =>
-            playerCount === 0 ||
-            (itemData[id]?.minPlayers <= playerCount &&
-              playerCount <= itemData[id]?.maxPlayers)
-        )
-        //.filter(({ id }) => itemData[id]?.type === "boardgameexpansion")
-        .map((game) => (
-          <GameCard game={game} key={game.id + game.name} />
-        ))}
+      <Container>
+        {games
+          .filter(
+            ({ id }) =>
+              playerCount === 0 ||
+              (itemData[id]?.minPlayers <= playerCount &&
+                playerCount <= itemData[id]?.maxPlayers)
+          )
+          //.filter(({ id }) => itemData[id]?.type === "boardgameexpansion")
+          .map((game) => (
+            <>
+              <br />
+              <GameCard game={game} key={game.id + game.name} />
+            </>
+          ))}
+      </Container>
     </div>
   );
 }

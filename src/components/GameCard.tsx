@@ -26,17 +26,19 @@ const GameCard = ({ game }: GameCardProps) => {
 
   return (
     <Card>
-      <Row className="game-card">
-        <Col>
-          <img src={game.thumb} alt="thumbnail" />
-        </Col>
-        <Col>
-          <strong>{game.name.replace("&amp;", "&")}</strong>
-          {ItemData.isExpansion(game.id, itemData) && " (exp.)"}
-        </Col>
-        <Col>{game.year}</Col>
-        <Col>{playerCount}</Col>
-      </Row>
+      <Card.Body>
+        <Row className="game-card">
+          <Col>
+            <img src={game.thumb} alt="thumbnail" />
+          </Col>
+          <Col>
+            <strong>{game.name.replace("&amp;", "&")}</strong>
+            {ItemData.isExpansion(game.id, itemData) && " (exp.)"}
+          </Col>
+          <Col>{game.year}</Col>
+          <Col>{playerCount}</Col>
+        </Row>
+      </Card.Body>
     </Card>
   );
 };

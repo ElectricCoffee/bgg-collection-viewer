@@ -3,10 +3,12 @@
   --orange: #ff5100;
   --orange-dark: #d34604;
   --fontsize: x-large;
+  --bs-gray-200: #ecedee;
 }
 
 .App {
   text-align: center;
+  background-color: var(--bs-gray-200);
 }
 
 .App-logo {
