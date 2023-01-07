@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import "./App.css";
 import axios from "axios";
 import useGameStore from "./stores/useGameStore";
@@ -13,9 +13,6 @@ import Container from "react-bootstrap/Container";
 const userName = "ElectricCoffee";
 
 const baseUrl = "https://boardgamegeek.com/xmlapi2/";
-
-const bggMystery = "&amp;#226;&amp;#128;&amp;#139;";
-const bggNewLine = "&amp;#10;";
 
 function App() {
   const { games, setGames, itemData, setItemData } = useGameStore();
