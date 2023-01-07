@@ -9,6 +9,7 @@ function ResetButton() {
 
   return (
     <Button
+      className="nav-reload-button"
       size="lg"
       variant="outline-warning"
       onClick={() => {
