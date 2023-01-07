@@ -1,5 +1,3 @@
-import React from "react";
-
 namespace Arr {
   export function intersperse<T>(arr: T[], newItem: T) {
     if (arr.length < 2) {
