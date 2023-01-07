@@ -6,37 +6,15 @@ import _ from "lodash";
 import Collection from "./utils/Collection";
 import Items from "./utils/Items";
 import usePlayerCountStore from "./stores/usePlayerCountStore";
-import ItemData from "./types/ItemData";
+import GameCard from "./components/GameCard";
+import NavBar from "./components/NavBar";
 
 const userName = "ElectricCoffee";
 
 const baseUrl = "https://boardgamegeek.com/xmlapi2/";
 
-function ResetButton() {
-  const reset = useGameStore((st) => st.reset);
-
-  return <button onClick={reset}>Reload List</button>;
-}
-
-const PlayerCountButtons = () => {
-  const { count, setCount } = usePlayerCountStore();
-
-  const decorate = (num: number) => {
-    const text = num === 0 ? "All" : num;
-    return num === count ? `» ${text} «` : text;
-  };
-
-  return (
-    <div>
-      Number of players:{" "}
-      {_.range(21).map((i) => (
-        <button onClick={() => setCount(i)} key={i}>
-          {decorate(i)}
-        </button>
-      ))}
-    </div>
-  );
-};
+const bggMystery = "&amp;#226;&amp;#128;&amp;#139;";
+const bggNewLine = "&amp;#10;";
 
 function App() {
   const { games, setGames, itemData, setItemData } = useGameStore();
@@ -72,45 +50,19 @@ function App() {
 
   return (
     <div className="App">
-      <ResetButton />
-      <PlayerCountButtons />
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Image</th>
-            <th>Title</th>
-            <th>Year</th>
-            <th>Min Players</th>
-            <th>Max Players</th>
-          </tr>
-        </thead>
-        <tbody>
-          {games
-            .filter(
-              ({ id }) =>
-                playerCount === 0 ||
-                (itemData[id]?.minPlayers <= playerCount &&
-                  playerCount <= itemData[id]?.maxPlayers)
-            )
-            //.filter(({ id }) => itemData[id]?.type === "boardgameexpansion")
-            .map((game) => (
-              <tr key={game.id + game.name}>
-                <td>{game.id}</td>
-                <td>
-                  <img src={game.thumb} alt="thumbnail" />
-                </td>
-                <td>
-                  <strong>{game.name.replace("&amp;", "&")}</strong>
-                  {ItemData.isExpansion(game.id, itemData) && " (exp.)"}
-                </td>
-                <td>{game.year}</td>
-                <td>{itemData[game.id]?.minPlayers}</td>
-                <td>{itemData[game.id]?.maxPlayers}</td>
-              </tr>
-            ))}
-        </tbody>
-      </table>
+      <NavBar />
+
+      {games
+        .filter(
+          ({ id }) =>
+            playerCount === 0 ||
+            (itemData[id]?.minPlayers <= playerCount &&
+              playerCount <= itemData[id]?.maxPlayers)
+        )
+        //.filter(({ id }) => itemData[id]?.type === "boardgameexpansion")
+        .map((game) => (
+          <GameCard game={game} key={game.id + game.name} />
+        ))}
     </div>
   );
 }
