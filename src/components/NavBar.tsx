@@ -24,25 +24,12 @@ const NavBar = () => {
     num === count ? "outline-warning" : "outline-light";
 
   return (
-    <RBNavBar
-      variant="dark"
-      style={{
-        backgroundColor: "var(--purple)",
-        alignItems: "center",
-      }}
-    >
-      <RBNavBar.Brand
-        style={{
-          fontWeight: "bolder",
-          fontVariant: "small-caps",
-          fontSize: "x-large",
-          marginLeft: 5,
-        }}
-      >
-        <span style={{ color: "var(--orange)" }}>BGG</span> Collection Viewer
+    <RBNavBar variant="dark" className="nav-bar">
+      <RBNavBar.Brand className="nav-brand">
+        <span className="bgg">BGG</span> Collection Viewer
       </RBNavBar.Brand>
       <Container>
-        <RBNavBar.Text style={{ fontSize: "x-large", marginRight: 5 }}>
+        <RBNavBar.Text className="nav-player-count">
           Player Count:
         </RBNavBar.Text>
         {_.range(21).map((i) => (

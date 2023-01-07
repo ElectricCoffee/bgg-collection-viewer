@@ -2,6 +2,7 @@
   --purple: #3f3a60;
   --orange: #ff5100;
   --orange-dark: #d34604;
+  --fontsize: x-large;
 }
 
 .App {
@@ -41,4 +42,28 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.game-card {
+  align-items: center;
+}
+
+.nav-bar {
+  background-color: var(--purple);
+  align-items: center;
+}
+
+.nav-brand {
+  font-weight: bolder;
+  font-variant: small-caps;
+  margin-left: 5px;
+}
+
+.nav-player-count {
+  font-size: large;
+  margin-right: 5px;
+}
+
+.bgg {
+  color: var(--orange);
 }

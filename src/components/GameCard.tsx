@@ -26,7 +26,7 @@ const GameCard = ({ game }: GameCardProps) => {
 
   return (
     <Card>
-      <Row style={{ alignItems: "center" }}>
+      <Row className="game-card">
         <Col>
           <img src={game.thumb} alt="thumbnail" />
         </Col>
