@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import "./App.css";
+import "./styles/App.css";
 import axios from "axios";
 import useGameStore from "./stores/useGameStore";
 import _ from "lodash";
