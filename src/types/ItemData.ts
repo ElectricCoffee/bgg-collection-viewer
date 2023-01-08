@@ -1,3 +1,5 @@
+import { ItemType } from "../constants";
+
 export interface Item {
   description: string;
   minPlayers: number;
@@ -14,7 +16,7 @@ interface ItemData {
 
 namespace ItemData {
   export const isExpansion = (id: string, data: ItemData) =>
-    data[id]?.type === "boardgameexpansion";
+    data[id]?.type === ItemType.Expansion;
 }
 
 export default ItemData;

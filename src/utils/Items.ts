@@ -1,9 +1,6 @@
+import { ItemType } from "../constants";
 import ItemData, { Item } from "../types/ItemData";
 import Elem from "./helpers/elementHelper";
-
-const category = "boardgamecategory";
-const mechanic = "boardgamemechanic";
-const designer = "boardgamedesigner";
 
 namespace Items {
   function getItemData(element: Element): Item {
@@ -21,9 +18,9 @@ namespace Items {
       minPlayers: Number(get("minplayers").getAttribute("value")),
       maxPlayers: Number(get("maxplayers").getAttribute("value")),
       type: element.getAttribute("type") ?? "",
-      categories: filterMap(category),
-      mechanisms: filterMap(mechanic),
-      designers: filterMap(designer),
+      categories: filterMap(ItemType.Category),
+      mechanisms: filterMap(ItemType.Mechanic),
+      designers: filterMap(ItemType.Designer),
     };
   }
 
