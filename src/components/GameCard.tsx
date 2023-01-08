@@ -39,6 +39,7 @@ const GameCard = ({ game }: GameCardProps) => {
           </Col>
           <Col>{game.year}</Col>
           <Col>{playerCount}</Col>
+          <Col>{itemData[game.id]?.categories.join(", ")}</Col>
           <Col>
             <Button
               variant="outline-primary"

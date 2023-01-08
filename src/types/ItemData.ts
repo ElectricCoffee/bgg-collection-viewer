@@ -3,6 +3,9 @@ export interface Item {
   minPlayers: number;
   maxPlayers: number;
   type: string;
+  categories: string[];
+  mechanisms: string[];
+  designers: string[];
 }
 
 interface ItemData {
