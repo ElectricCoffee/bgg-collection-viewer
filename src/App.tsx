@@ -10,10 +10,7 @@ import GameCard from "./components/GameCard";
 import NavBar from "./components/NavBar";
 import Container from "react-bootstrap/Container";
 import { isRequestPending } from "./types/RequestPending";
-
-const userName = "ElectricCoffee";
-
-const baseUrl = "https://boardgamegeek.com/xmlapi2/";
+import { baseUrl, userName } from "./constants";
 
 function App() {
   const { games, setGames, itemData, setItemData } = useGameStore();
@@ -24,6 +21,7 @@ function App() {
   useEffect(() => {
     if (games.length === 0) {
       console.log("polling server for game data...");
+      // there has to be a nicer way
       axios
         .get(baseUrl + `collection?username=${userName}&own=1`)
         .then((res) => {
@@ -38,9 +36,8 @@ function App() {
           setGames(newGames);
         })
         .catch((x) => console.error(x));
-
-      return () => clearInterval(timeout.current);
     }
+    return () => clearInterval(timeout.current);
   }, [games.length, setGames, sentry]);
 
   useEffect(() => {
