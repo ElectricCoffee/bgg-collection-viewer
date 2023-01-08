@@ -18,9 +18,9 @@ function App() {
   const [sentry, setSentry] = useState(0);
   const timeout = useRef<NodeJS.Timeout | undefined>();
 
-  const getGames = useCallback(async () => {
+  const getCollection = useCallback(async () => {
     const res = await axios.get(
-      baseUrl + `collection?username=${userName}&own=1`
+      `${baseUrl}collection?username=${userName}&own=1`
     );
     const xml = new DOMParser().parseFromString(res.data, "text/xml");
 
@@ -35,8 +35,7 @@ function App() {
 
   const getItemData = useCallback(async () => {
     const ids = _.uniq(games.map((x) => x.id)).join(",");
-
-    const res = await axios.get(baseUrl + `thing?id=${ids}`);
+    const res = await axios.get(`${baseUrl}thing?id=${ids}`);
     const xml = new DOMParser().parseFromString(res.data, "text/xml");
     const data = Items.dealWithXml(xml);
     setItemData(data);
@@ -45,10 +44,10 @@ function App() {
   useEffect(() => {
     if (games.length === 0) {
       console.log("polling server for game data...");
-      getGames().catch((x) => console.error(x));
+      getCollection().catch((x) => console.error(x));
     }
     return () => clearInterval(timeout.current);
-  }, [games.length, sentry, getGames]);
+  }, [games.length, sentry, getCollection]);
 
   useEffect(() => {
     if (games.length !== 0 && Object.keys(itemData).length === 0) {

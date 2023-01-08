@@ -1,5 +1,4 @@
 import GameData from "../types/GameData";
-import { AxiosResponse } from "axios";
 import Elem from "./helpers/elementHelper";
 
 namespace Collection {

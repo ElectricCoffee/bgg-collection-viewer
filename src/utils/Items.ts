@@ -1,4 +1,3 @@
-import { AxiosResponse } from "axios";
 import ItemData, { Item } from "../types/ItemData";
 import Elem from "./helpers/elementHelper";
 
