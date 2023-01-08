@@ -2,7 +2,6 @@ import React, { useMemo, useState } from "react";
 import { Card, Row, Col, Button } from "react-bootstrap";
 import useGameStore from "../stores/useGameStore";
 import GameData from "../types/GameData";
-import ItemData from "../types/ItemData";
 import GameInfoModal from "./modals/GameInfoModal";
 
 interface GameCardProps {
@@ -11,11 +10,11 @@ interface GameCardProps {
 
 const GameCard = ({ game }: GameCardProps) => {
   const [showModal, setShowModal] = useState(false);
-  const itemData = useGameStore((st) => st.itemData);
+  const [getItem, isExp] = useGameStore((st) => [st.getItem, st.isExpansion]);
 
   const playerCount = useMemo(() => {
-    const min = itemData[game.id]?.minPlayers;
-    const max = itemData[game.id]?.maxPlayers;
+    const min = getItem(game)?.minPlayers;
+    const max = getItem(game)?.maxPlayers;
 
     return min === max ? (
       <>{min} players</>
@@ -24,7 +23,7 @@ const GameCard = ({ game }: GameCardProps) => {
         {min} &ndash; {max} players
       </>
     );
-  }, [game.id, itemData]);
+  }, [game, getItem]);
 
   return (
     <Card>
@@ -35,11 +34,11 @@ const GameCard = ({ game }: GameCardProps) => {
           </Col>
           <Col>
             <strong>{game.name.replace("&amp;", "&")}</strong>
-            {ItemData.isExpansion(game.id, itemData) && " (exp.)"}
+            {isExp(game) && " (exp.)"}
           </Col>
           <Col>{game.year}</Col>
           <Col>{playerCount}</Col>
-          <Col>{itemData[game.id]?.categories.join(", ")}</Col>
+          <Col>{getItem(game)?.categories.join(", ")}</Col>
           <Col>
             <Button
               variant="outline-primary"
