@@ -14,8 +14,7 @@ namespace Collection {
     };
   }
 
-  export function dealWithXml(x: AxiosResponse) {
-    const xml = new DOMParser().parseFromString(x.data, "text/xml");
+  export function dealWithXml(xml: Document) {
     const items = Array.from(xml.getElementsByTagName("item"));
     const gamedata = items.map(extractGameData);
 

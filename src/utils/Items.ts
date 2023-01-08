@@ -13,8 +13,7 @@ namespace Items {
     };
   }
 
-  export function dealWithXml(res: AxiosResponse): ItemData {
-    const xml = new DOMParser().parseFromString(res.data, "text/xml");
+  export function dealWithXml(xml: Document): ItemData {
     const items = xml
       .getElementsByTagName("items")[0]
       .getElementsByTagName("item");
