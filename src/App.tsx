@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import "./App.css";
 import axios from "axios";
 import useGameStore from "./stores/useGameStore";
@@ -18,44 +18,44 @@ function App() {
   const [sentry, setSentry] = useState(0);
   const timeout = useRef<NodeJS.Timeout | undefined>();
 
+  const getGames = useCallback(async () => {
+    const res = await axios.get(
+      baseUrl + `collection?username=${userName}&own=1`
+    );
+    const xml = new DOMParser().parseFromString(res.data, "text/xml");
+
+    if (isRequestPending(xml)) {
+      timeout.current = setTimeout(() => setSentry((x) => x + 1), 5000);
+      return;
+    }
+
+    const newGames = Collection.dealWithXml(xml);
+    setGames(newGames);
+  }, [setGames]);
+
+  const getItemData = useCallback(async () => {
+    const ids = _.uniq(games.map((x) => x.id)).join(",");
+
+    const res = await axios.get(baseUrl + `thing?id=${ids}`);
+    const xml = new DOMParser().parseFromString(res.data, "text/xml");
+    const data = Items.dealWithXml(xml);
+    setItemData(data);
+  }, [games, setItemData]);
+
   useEffect(() => {
     if (games.length === 0) {
       console.log("polling server for game data...");
-      // there has to be a nicer way
-      axios
-        .get(baseUrl + `collection?username=${userName}&own=1`)
-        .then((res) => {
-          const xml = new DOMParser().parseFromString(res.data, "text/xml");
-
-          if (isRequestPending(xml)) {
-            timeout.current = setTimeout(() => setSentry((x) => x + 1), 5000);
-            return;
-          }
-
-          const newGames = Collection.dealWithXml(xml);
-          setGames(newGames);
-        })
-        .catch((x) => console.error(x));
+      getGames().catch((x) => console.error(x));
     }
     return () => clearInterval(timeout.current);
-  }, [games.length, setGames, sentry]);
+  }, [games.length, sentry, getGames]);
 
   useEffect(() => {
     if (games.length !== 0 && Object.keys(itemData).length === 0) {
       console.log("polling server for game info...");
-      const ids = _.uniq(games.map((x) => x.id)).join(",");
-
-      axios
-        .get(baseUrl + `thing?id=${ids}`)
-        .then((res) => {
-          const xml = new DOMParser().parseFromString(res.data, "text/xml");
-          console.log(xml);
-          const data = Items.dealWithXml(xml);
-          setItemData(data);
-        })
-        .catch((e) => console.error(e));
+      getItemData().catch((e) => console.error(e));
     }
-  }, [games, itemData, setItemData]);
+  }, [games, getItemData, itemData]);
 
   return (
     <div className="App">
