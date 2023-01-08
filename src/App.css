@@ -6,6 +6,10 @@
   --bs-gray-200: #ecedee;
 }
 
+.newline-preserve {
+  white-space: pre-wrap;
+}
+
 html {
   background-color: var(--bs-gray-200);
 }

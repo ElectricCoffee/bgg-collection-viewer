@@ -1,14 +1,16 @@
-import React, { useMemo } from "react";
-import { Card, Row, Col } from "react-bootstrap";
+import React, { useMemo, useState } from "react";
+import { Card, Row, Col, Button } from "react-bootstrap";
 import useGameStore from "../stores/useGameStore";
 import GameData from "../types/GameData";
 import ItemData from "../types/ItemData";
+import GameInfoModal from "./modals/GameInfoModal";
 
 interface GameCardProps {
   game: GameData;
 }
 
 const GameCard = ({ game }: GameCardProps) => {
+  const [showModal, setShowModal] = useState(false);
   const itemData = useGameStore((st) => st.itemData);
 
   const playerCount = useMemo(() => {
@@ -37,8 +39,21 @@ const GameCard = ({ game }: GameCardProps) => {
           </Col>
           <Col>{game.year}</Col>
           <Col>{playerCount}</Col>
+          <Col>
+            <Button
+              variant="outline-primary"
+              onClick={() => setShowModal(true)}
+            >
+              Info
+            </Button>
+          </Col>
         </Row>
       </Card.Body>
+      <GameInfoModal
+        game={game}
+        show={showModal}
+        onClose={() => setShowModal(false)}
+      />
     </Card>
   );
 };
