@@ -67,12 +67,11 @@ function App() {
               (itemData[id]?.minPlayers <= playerCount &&
                 playerCount <= itemData[id]?.maxPlayers)
           )
-          //.filter(({ id }) => itemData[id]?.type === "boardgameexpansion")
           .map((game) => (
-            <>
+            <React.Fragment key={game.id + game.name + game.year}>
               <br />
-              <GameCard game={game} key={game.id + game.name + game.year} />
-            </>
+              <GameCard game={game} />
+            </React.Fragment>
           ))}
       </Container>
     </div>
