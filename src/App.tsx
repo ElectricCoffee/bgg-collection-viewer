@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import "./styles/App.css";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import useGameStore from "./stores/useGameStore";
 import _ from "lodash";
 import Collection from "./utils/Collection";
@@ -19,7 +19,7 @@ function App() {
   const playerCount = usePlayerCountStore((st) => st.count);
   const [sentry, setSentry] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<Error | undefined>(undefined);
+  const [error, setError] = useState<AxiosError | undefined>(undefined);
   const timeout = useRef<NodeJS.Timeout | undefined>();
 
   const getCollection = useCallback(async () => {

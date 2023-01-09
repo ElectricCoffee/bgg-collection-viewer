@@ -1,8 +1,9 @@
+import { AxiosError } from "axios";
 import React from "react";
 import { Modal, Button } from "react-bootstrap";
 
 interface LoadingErrorModalProps {
-  error: Error | undefined;
+  error: AxiosError | undefined;
   onClose: () => void;
 }
 
