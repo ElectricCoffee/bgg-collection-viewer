@@ -12,12 +12,14 @@ import Container from "react-bootstrap/Container";
 import { isRequestPending } from "./types/RequestPending";
 import { baseUrl, userName } from "./constants";
 import LoadingModal from "./components/modals/LoadingModal";
+import LoadingErrorModal from "./components/modals/LoadingErrorModal";
 
 function App() {
   const { games, setGames, itemData, setItemData } = useGameStore();
   const playerCount = usePlayerCountStore((st) => st.count);
   const [sentry, setSentry] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<Error | undefined>(undefined);
   const timeout = useRef<NodeJS.Timeout | undefined>();
 
   const getCollection = useCallback(async () => {
@@ -47,22 +49,26 @@ function App() {
     if (games.length === 0) {
       console.log("polling server for game data...");
       setLoading(true);
-      getCollection().catch((x) => {
+      getCollection().catch((err) => {
         setLoading(false);
-        console.error(x);
+        setError(err);
+        console.error(err);
       });
     }
     return () => clearInterval(timeout.current);
   }, [games.length, sentry, getCollection]);
 
   useEffect(() => {
-    if (loading && games.length !== 0) {
+    if (loading && games.length !== 0 && !error) {
       console.log("polling server for game info...");
       getItemData()
-        .catch((e) => console.error(e))
+        .catch((err) => {
+          setError(err);
+          console.error(err);
+        })
         .finally(() => setLoading(false));
     }
-  }, [games.length, getItemData, loading]);
+  }, [error, games.length, getItemData, loading]);
 
   return (
     <div className="App">
@@ -83,6 +89,7 @@ function App() {
           ))}
       </Container>
       <LoadingModal show={loading} />
+      <LoadingErrorModal error={error} onClose={() => setError(undefined)} />
     </div>
   );
 }
