@@ -12,18 +12,20 @@ const GameCard = ({ game }: GameCardProps) => {
   const [showModal, setShowModal] = useState(false);
   const [getItem, isExp] = useGameStore((st) => [st.getItem, st.isExpansion]);
 
-  const playerCount = useMemo(() => {
-    const min = getItem(game)?.minPlayers;
-    const max = getItem(game)?.maxPlayers;
+  const min = getItem(game)?.minPlayers;
+  const max = getItem(game)?.maxPlayers;
 
-    return min === max ? (
-      <>{min} players</>
-    ) : (
-      <>
-        {min} &ndash; {max} players
-      </>
-    );
-  }, [game, getItem]);
+  const playerCount = useMemo(
+    () =>
+      min === max ? (
+        <>{min} players</>
+      ) : (
+        <>
+          {min} &ndash; {max} players
+        </>
+      ),
+    [max, min]
+  );
 
   return (
     <Card>
