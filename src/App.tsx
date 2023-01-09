@@ -11,11 +11,13 @@ import NavBar from "./components/NavBar";
 import Container from "react-bootstrap/Container";
 import { isRequestPending } from "./types/RequestPending";
 import { baseUrl, userName } from "./constants";
+import LoadingModal from "./components/modals/LoadingModal";
 
 function App() {
   const { games, setGames, itemData, setItemData } = useGameStore();
   const playerCount = usePlayerCountStore((st) => st.count);
   const [sentry, setSentry] = useState(0);
+  const [loading, setLoading] = useState(false);
   const timeout = useRef<NodeJS.Timeout | undefined>();
 
   const getCollection = useCallback(async () => {
@@ -44,17 +46,23 @@ function App() {
   useEffect(() => {
     if (games.length === 0) {
       console.log("polling server for game data...");
-      getCollection().catch((x) => console.error(x));
+      setLoading(true);
+      getCollection().catch((x) => {
+        setLoading(false);
+        console.error(x);
+      });
     }
     return () => clearInterval(timeout.current);
   }, [games.length, sentry, getCollection]);
 
   useEffect(() => {
-    if (games.length !== 0 && Object.keys(itemData).length === 0) {
+    if (loading && games.length !== 0) {
       console.log("polling server for game info...");
-      getItemData().catch((e) => console.error(e));
+      getItemData()
+        .catch((e) => console.error(e))
+        .finally(() => setLoading(false));
     }
-  }, [games, getItemData, itemData]);
+  }, [games.length, getItemData, loading]);
 
   return (
     <div className="App">
@@ -74,6 +82,7 @@ function App() {
             </React.Fragment>
           ))}
       </Container>
+      <LoadingModal show={loading} />
     </div>
   );
 }
