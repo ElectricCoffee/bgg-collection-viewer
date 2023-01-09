@@ -12,7 +12,11 @@ const LoadingErrorModal = ({ error, onClose }: LoadingErrorModalProps) => {
       <Modal.Header closeButton>
         <Modal.Title>Something went Wrong</Modal.Title>
       </Modal.Header>
-      <Modal.Body className="newline-preserve">{error?.message}</Modal.Body>
+      <Modal.Body>
+        {error?.message}
+        <br />
+        Please try again in about a minute.
+      </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={onClose}>
           Ok
